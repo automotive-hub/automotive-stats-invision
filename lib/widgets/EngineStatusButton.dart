@@ -13,9 +13,8 @@ class EngineStatusButton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
-            Color.fromRGBO(255, 255, 255, 0.1),
+            Color.fromRGBO(255, 255, 255, 0.3),
             Color.fromRGBO(0, 0, 0, 0),
-            Color.fromRGBO(255, 255, 255, 0.1),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,

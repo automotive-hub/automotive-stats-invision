@@ -12,16 +12,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: const Color(0xff2c3036),
       body: Container(
-        margin: EdgeInsets.fromLTRB(0, size.height * 0.1, 0,0),
+        margin: EdgeInsets.symmetric(
+            vertical: size.height * 0.05, horizontal: size.width * 0.05),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -38,9 +39,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             SizedBox(
-              height: size.height * 0.05,
+              height: size.height * 0.025,
             ),
             EngineStatusButton(),
+            SizedBox(
+              height: size.height * 0.05,
+            ),
             MainBoard(),
           ],
         ),

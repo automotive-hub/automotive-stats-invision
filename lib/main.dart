@@ -16,10 +16,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Poppins',
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
-
-
