@@ -37,7 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final _deviceConnectionController = StreamController<ConnectionStateUpdate>();
 
 // These are the UUIDs of your device
-  final Uuid serviceUuid = Uuid.parse("0000180f-0000-1000-8000-00805f9b34fb");
 
   Future<List<DiscoveredService>> discoverServices(String deviceId) async {
     try {
@@ -48,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<void> _startScan() async {
+  void _startScan() async {
 // Platform permissions handling stuff
     bool permGranted = false;
     setState(() {
@@ -67,12 +66,14 @@ class _MyHomePageState extends State<MyHomePage> {
           .scanForDevices(withServices: [serviceUuid]).listen((device) async {
         // Change this string to what you defined in Zephyr
         print(device);
-        if (device.name == DEVICE_NAME) {
+        if (device.name == 'ESP32-OBD2-BLE') {
+          // print(device);
+          discoveredServices =
+              await flutterReactiveBle.discoverServices(device.id);
           setState(() {
             _ubiqueDevice = device;
             _foundDeviceWaitingToConnect = true;
           });
-          await _scanStream.cancel();
         }
       });
     }
@@ -105,6 +106,25 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Future<void> disconnect() async {
+    try {
+      await _connection.cancel();
+    } on Exception catch (e, _) {
+    } finally {
+      // Since [_connection] subscription is terminated, the "disconnected" state cannot be received and propagated
+      _deviceConnectionController.add(
+        ConnectionStateUpdate(
+          deviceId: _ubiqueDevice.id,
+          connectionState: DeviceConnectionState.disconnected,
+          failure: null,
+        ),
+      );
+      setState(() {
+        _connected = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -119,15 +139,26 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text(
-                  'Vehicle Connected  ',
+                  _foundDeviceWaitingToConnect
+                      ? _connected
+                          ? connectionStatusCONNECT
+                          : connectionStatusFounded
+                      : connectionStatusOFF,
                   style: TextStyle(fontSize: 30, color: Colors.white),
+                ),
+                SizedBox(
+                  width: 10,
                 ),
                 Icon(
                   Icons.circle,
                   size: 15,
-                  color: Color(0xff34c759),
+                  color: _foundDeviceWaitingToConnect
+                      ? _connected
+                          ? Color(0xff34c759)
+                          : Colors.red
+                      : Colors.black,
                 )
               ],
             ),
@@ -137,20 +168,16 @@ class _MyHomePageState extends State<MyHomePage> {
             GestureDetector(
               onTap: _scanStarted
                   ? _connected
-                      ? null
-                      : () async {
-                          await connect();
+                      ? () async {
+                          await disconnect();
                         }
-                  : () async {
-                      await _startScan();
-                    },
-              child: EngineStatusButton(
-                color: _foundDeviceWaitingToConnect
-                    ? _connected
-                        ? Color(0xff25CB55)
-                        : Colors.red
-                    : Colors.black,
-              ),
+                      : connect
+                  : _startScan,
+              child: EngineStatusButton(color: _foundDeviceWaitingToConnect
+                  ? _connected
+                  ? Color(0xff25CB55)
+                  : Colors.red
+                  : Colors.black,),
             ),
             SizedBox(
               height: size.height * 0.05,
