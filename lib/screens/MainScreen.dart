@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:location_permissions/location_permissions.dart';
 
+import '../config/constants/ble_desgin_constants.g.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -65,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
           .scanForDevices(withServices: [serviceUuid]).listen((device) async {
         // Change this string to what you defined in Zephyr
         print(device);
-        if (device.name == 'ESP32-OBD2-BLE') {
+        if (device.name == DEVICE_NAME) {
           setState(() {
             _ubiqueDevice = device;
             _foundDeviceWaitingToConnect = true;
