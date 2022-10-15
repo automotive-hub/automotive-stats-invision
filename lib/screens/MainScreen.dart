@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:location_permissions/location_permissions.dart';
 
+import '../config/constants/ble_desgin_constants.g.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -35,7 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final _deviceConnectionController = StreamController<ConnectionStateUpdate>();
 
 // These are the UUIDs of your device
-  final Uuid serviceUuid = Uuid.parse("0000180f-0000-1000-8000-00805f9b34fb");
 
   Future<List<DiscoveredService>> discoverServices(String deviceId) async {
     try {
@@ -105,6 +106,25 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Future<void> disconnect() async {
+    try {
+      await _connection.cancel();
+    } on Exception catch (e, _) {
+    } finally {
+      // Since [_connection] subscription is terminated, the "disconnected" state cannot be received and propagated
+      _deviceConnectionController.add(
+        ConnectionStateUpdate(
+          deviceId: _ubiqueDevice.id,
+          connectionState: DeviceConnectionState.disconnected,
+          failure: null,
+        ),
+      );
+      setState(() {
+        _connected = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -119,15 +139,26 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text(
-                  'Vehicle Connected  ',
+                  _foundDeviceWaitingToConnect
+                      ? _connected
+                          ? connectionStatusCONNECT
+                          : connectionStatusFounded
+                      : connectionStatusOFF,
                   style: TextStyle(fontSize: 30, color: Colors.white),
+                ),
+                SizedBox(
+                  width: 10,
                 ),
                 Icon(
                   Icons.circle,
                   size: 15,
-                  color: Color(0xff34c759),
+                  color: _foundDeviceWaitingToConnect
+                      ? _connected
+                          ? Color(0xff34c759)
+                          : Colors.red
+                      : Colors.black,
                 )
               ],
             ),
@@ -137,7 +168,9 @@ class _MyHomePageState extends State<MyHomePage> {
             GestureDetector(
               onTap: _scanStarted
                   ? _connected
-                      ? null
+                      ? () async {
+                          await disconnect();
+                        }
                       : connect
                   : _startScan,
               child: EngineStatusButton(color: _foundDeviceWaitingToConnect

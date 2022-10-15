@@ -27,4 +27,7 @@ Uuid BLE_CHARACTERISTIC_BATTERY_LEVEL = Uuid.parse("2A19");
 
 List<Uuid> deviceServices = [BLE_SERVICE_ENGINE_UUID,BLE_SERVICE_GENERIC_UUID,BLE_SERVICE_OTA_UUID,BLE_SERVICE_BATTERY,];
 const String DEVICE_NAME = "ESP32-OBD2-BLE";
+const String connectionStatusOFF = "Scan for device";
+const String connectionStatusFounded = "Vehicle Disconnected";
+const String connectionStatusCONNECT = "Vehicle Connected";
 Uuid serviceUuid = Uuid.parse("0000180f-0000-1000-8000-00805f9b34fb");
