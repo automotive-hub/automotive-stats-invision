@@ -1,9 +1,15 @@
 
 import 'package:flutter/material.dart';
 
-class EngineStatusButton extends StatelessWidget {
-  const EngineStatusButton({Key? key}) : super(key: key);
+class EngineStatusButton extends StatefulWidget {
+  final Color color;
+  const EngineStatusButton({Key? key, required this.color}) : super(key: key);
 
+  @override
+  State<EngineStatusButton> createState() => _EngineStatusButtonState();
+}
+
+class _EngineStatusButtonState extends State<EngineStatusButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -13,9 +19,8 @@ class EngineStatusButton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
-            Color.fromRGBO(255, 255, 255, 0.1),
+            Color.fromRGBO(255, 255, 255, 0.3),
             Color.fromRGBO(0, 0, 0, 0),
-            Color.fromRGBO(255, 255, 255, 0.1),
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -28,10 +33,10 @@ class EngineStatusButton extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(
             Icons.power_settings_new,
-            color: Color(0xff25CB55),
+            color:  widget.color,
           ),
           SizedBox(width: 5,),
           Text(

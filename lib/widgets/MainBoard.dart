@@ -2,45 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-final List<List<bool>> imgList = [
-  [
-    false,
-    false,
-    true,
-    true,
-  ],
-  [
-    true,
-    true,
-    true,
-    true,
-  ],
-];
-final List<Widget> imageSliders = imgList
-    .map((item) => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: item
-              .map((e) => Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor: e ? Color(0xff53a93f):Color(0xfffb0049),
-                          child: Icon(
-                        e ? Icons.check : Icons.close,size: 30,
-                      )),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        e ? "Success" : "Fail",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white),
-                      )
-                    ],
-                  ))
-              .toList(),
-        ))
-    .toList();
+import '../models/FakeData.dart';
 
 class MainBoard extends StatefulWidget {
   const MainBoard({Key? key}) : super(key: key);
@@ -55,16 +17,55 @@ class _MainBoardState extends State<MainBoard> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> imageSliders = imgList
+        .map((item) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: item
+                  .map((e) => Column(
+                        children: [
+                          CircleAvatar(
+                              radius: 25,
+                              backgroundColor: e.status == 0
+                                  ? Color(0xff4700B1)
+                                  : e.status == 1
+                                      ? Color(0xff53a93f)
+                                      : Color(0xfffb0049),
+                              child: Icon(
+                                e.status == 0
+                                    ? Icons.more_horiz
+                                    : e.status == 1
+                                        ? Icons.check
+                                        : Icons.close,
+                                size: 30,
+                              )),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            e.status == 0
+                                ? "Processing"
+                                : e.status == 1
+                                    ? "Success"
+                                    : "Fail",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 12),
+                          )
+                        ],
+                      ))
+                  .toList(),
+            ))
+        .toList();
     return Container(
-        height: MediaQuery.of(context).size.height * 0.65,
-        margin: const EdgeInsets.all(10),
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+        height: MediaQuery.of(context).size.height * 0.625,
+        padding: EdgeInsets.fromLTRB(
+            0, MediaQuery.of(context).size.height * 0.03, 0, 0),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [
               Color.fromRGBO(255, 255, 255, 0.1),
               Color.fromRGBO(0, 0, 0, 0),
-              Color.fromRGBO(255, 255, 255, 0.1),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -76,16 +77,16 @@ class _MainBoardState extends State<MainBoard> {
         child: Column(
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.4,
+              height: MediaQuery.of(context).size.height * 0.425,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Column(
                     children: [
                       CircularPercentIndicator(
-                        radius: 60.0,
-                        lineWidth: 15.0,
+                        radius: 70.0,
+                        lineWidth: 20.0,
                         percent: 0.75,
                         center: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -93,14 +94,14 @@ class _MainBoardState extends State<MainBoard> {
                             Text(
                               "2km",
                               style: TextStyle(
-                                  fontSize: 30,
+                                  fontSize: 25,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                             ),
                             Text(
                               'Remaining',
                               style:
-                                  TextStyle(fontSize: 10, color: Colors.white),
+                                  TextStyle(fontSize: 9, color: Colors.white),
                             )
                           ],
                         ),
@@ -116,10 +117,10 @@ class _MainBoardState extends State<MainBoard> {
                       Spacer(),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 20),
+                            vertical: 10, horizontal: 20),
                         decoration: BoxDecoration(
                           color: Color(0xffd8d8d9),
-                          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
                         ),
                         child: Column(
                           children: const [
@@ -142,11 +143,9 @@ class _MainBoardState extends State<MainBoard> {
                       )
                     ],
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.4,
+                  Container(
+                    margin: const EdgeInsets.only(left: 15),
+                    // width: MediaQuery.of(context).size.width * 0.4,
                     height: MediaQuery.of(context).size.height * 0.4,
                     child: Image.asset(
                       'assets/images/car.png',
@@ -156,7 +155,7 @@ class _MainBoardState extends State<MainBoard> {
                 ],
               ),
             ),
-            SizedBox(height: 50,),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             CarouselSlider(
               items: imageSliders,
               carouselController: controller,
