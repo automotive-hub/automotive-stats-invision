@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _startScan() async {
+  Future<void> _startScan() async {
 // Platform permissions handling stuff
     bool permGranted = false;
     setState(() {
@@ -66,13 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
         // Change this string to what you defined in Zephyr
         print(device);
         if (device.name == 'ESP32-OBD2-BLE') {
-          // print(device);
-          discoveredServices =
-              await flutterReactiveBle.discoverServices(device.id);
           setState(() {
             _ubiqueDevice = device;
             _foundDeviceWaitingToConnect = true;
           });
+          await _scanStream.cancel();
         }
       });
     }
@@ -138,13 +136,19 @@ class _MyHomePageState extends State<MyHomePage> {
               onTap: _scanStarted
                   ? _connected
                       ? null
-                      : connect
-                  : _startScan,
-              child: EngineStatusButton(color: _foundDeviceWaitingToConnect
-                  ? _connected
-                  ? Color(0xff25CB55)
-                  : Colors.red
-                  : Colors.black,),
+                      : () async {
+                          await connect();
+                        }
+                  : () async {
+                      await _startScan();
+                    },
+              child: EngineStatusButton(
+                color: _foundDeviceWaitingToConnect
+                    ? _connected
+                        ? Color(0xff25CB55)
+                        : Colors.red
+                    : Colors.black,
+              ),
             ),
             SizedBox(
               height: size.height * 0.05,
