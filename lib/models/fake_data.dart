@@ -1,4 +1,4 @@
-import 'package:automotive_stats_invision/models/CheckList.dart';
+import 'package:automotive_stats_invision/models/check_list.dart';
 
 final List<List<CheckList>> imgList = [
   [
