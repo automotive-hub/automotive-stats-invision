@@ -5,7 +5,8 @@ import 'package:percent_indicator/percent_indicator.dart';
 import '../models/fake_data.dart';
 
 class MainBoard extends StatefulWidget {
-  const MainBoard({Key? key}) : super(key: key);
+  final int traveledDistance;
+  const MainBoard({Key? key, required this.traveledDistance}) : super(key: key);
 
   @override
   State<MainBoard> createState() => _MainBoardState();
@@ -87,7 +88,7 @@ class _MainBoardState extends State<MainBoard> {
                       CircularPercentIndicator(
                         radius: 70.0,
                         lineWidth: 20.0,
-                        percent: 0.75,
+                        percent: widget.traveledDistance/3000 ,
                         center: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [

@@ -28,7 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late DiscoveredDevice _ubiqueDevice;
   late Future<List<DiscoveredService>> Function(String deviceId)
       bleDiscoverServices;
-  late List<String> list = [];
+   List<String> list = ["0","0","0"];
   List<DiscoveredService> discoveredServices = [];
   final flutterReactiveBle = FlutterReactiveBle();
   late StreamSubscription<DiscoveredDevice> _scanStream;
@@ -104,6 +104,21 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       },
     );
+    print(discoveredServices);
+    List<QualifiedCharacteristic> list1 = [];
+    for (int g = 0; g < 3; g++) {
+      final characteristic = QualifiedCharacteristic(
+          serviceId: Uuid.parse("8a40e28c-e92a-4406-874e-4f71a21f69db"),
+          characteristicId: deviceServices[g],
+          deviceId: _ubiqueDevice.id);
+      list1.add(characteristic);
+      flutterReactiveBle.subscribeToCharacteristic(list1[g]).listen((event) {
+        setState(() {
+         list[g] = String.fromCharCodes(event);
+        });
+        print(list);
+      });
+    }
   }
 
   Future<void> disconnect() async {
@@ -173,16 +188,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
                       : connect
                   : _startScan,
-              child: EngineStatusButton(color: _foundDeviceWaitingToConnect
-                  ? _connected
-                  ? Color(0xff25CB55)
-                  : Colors.red
-                  : Colors.black,),
+              child: EngineStatusButton(
+                color: _foundDeviceWaitingToConnect
+                    ? _connected
+                        ? Color(0xff25CB55)
+                        : Colors.red
+                    : Colors.black,
+              ),
             ),
             SizedBox(
               height: size.height * 0.05,
             ),
-            MainBoard(),
+            MainBoard(traveledDistance: list.length != 0 ? int.parse(list[1]) : 0 ),
           ],
         ),
       ),
