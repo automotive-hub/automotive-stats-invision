@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-import '../models/FakeData.dart';
+import '../models/fake_data.dart';
 
 class MainBoard extends StatefulWidget {
   const MainBoard({Key? key}) : super(key: key);
