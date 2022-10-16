@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:location_permissions/location_permissions.dart';
 
-import '../config/constants/ble_desgin_constants.g.dart';
+import '../config/constants/string_constant.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
