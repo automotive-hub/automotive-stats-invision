@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:automotive_stats_invision/check_list_service.dart/check_list_service.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 class BleDeviceConnector {
   BleDeviceConnector({
     required FlutterReactiveBle ble,
-  })  : _ble = ble;
+    required CheckListService checkListService,
+  }) : _ble = ble;
 
   final FlutterReactiveBle _ble;
 
@@ -23,7 +25,7 @@ class BleDeviceConnector {
     _connection = _ble.connectToDevice(id: deviceId).listen(
       (update) {
         _deviceConnectionController.add(update);
-        result=true;
+        result = true;
       },
     );
     return result;
