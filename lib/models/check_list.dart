@@ -1,9 +1,10 @@
-class CheckList {
+class CheckListValue {
   String name;
-  int status;
+  String status;
 
-  CheckList({
+  CheckListValue({
     required this.name,
     required this.status,
   });
 }
+

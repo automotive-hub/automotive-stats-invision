@@ -1,20 +1,15 @@
-import 'dart:async';
-import 'dart:io' show Platform;
-
-import 'package:automotive_stats_invision/widgets/EngineStatusButton.dart';
-import 'package:automotive_stats_invision/widgets/MainBoard.dart';
+import 'package:automotive_stats_invision/models/check_list.dart';
+import 'package:automotive_stats_invision/widgets/checkList.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:location_permissions/location_permissions.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../config/constants/string_constant.dart';
+import '../models/enum.dart';
+import '../widgets/more_detail_widget.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
+  const MyHomePage({super.key, required this.listCheckList});
+  final List<CheckListValue> listCheckList;
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -23,6 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isConnected = false;
   bool isEngineStarted = false;
   double traveledDistance = 0.2;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -199,8 +195,24 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-
+                    // SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                    Container(
+                      height: size.height*0.1,
+                      child: ListView.builder(
+                          itemCount: widget.listCheckList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(onTap:(){
+                              showDialog(
+                                  // barrierDismissible: true,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return MoreDetailWidget();
+                                    ;
+                                  });
+                            },
+                                child: CheckList(checkList: widget.listCheckList[index]));
+                          }),
+                    ),
                     // Row(
                     //   mainAxisAlignment: MainAxisAlignment.center,
                     //   children: imgList.asMap().entries.map((entry) {
@@ -231,3 +243,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
