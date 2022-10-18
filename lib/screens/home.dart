@@ -2,7 +2,9 @@ import 'package:automotive_stats_invision/utils/const_string.dart';
 import 'package:automotive_stats_invision/widgets/checked_list.dart';
 import 'package:automotive_stats_invision/widgets/circle_percent_remain.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
+import '../config/constants/ble_map.dart';
 import '../models/checklist.dart';
 import '../utils/const_color.dart';
 import '../widgets/status_connect.dart';
@@ -38,6 +40,19 @@ class _HomeState extends State<Home> {
         status: ItemCheckListStatus.loading,
         title: ConstString.deletedCode),
   ];
+
+  BleStreams bleStreams = BleStreams(ble: FlutterReactiveBle());
+
+  @override
+  initState() {
+    super.initState();
+    bleStreams.deviceConnectionState.stream.listen((event) {
+      print(event);
+      if (event.connectionState == DeviceConnectionState.connected) {
+        bleStreams.getListStream(event.deviceId);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

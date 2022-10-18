@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 import 'screens/home.dart';
 
-void main() {
+Future<void> main() async {
+  await WidgetsFlutterBinding.ensureInitialized();
+  await FlutterReactiveBle().initialize();
   runApp(const MyApp());
 }
 
