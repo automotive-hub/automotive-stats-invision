@@ -2,6 +2,7 @@ import 'package:automotive_stats_invision/utils/const_string.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import '../models/checklist.dart';
 import '../utils/const_color.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -14,9 +15,27 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final bool _isConnected = false;
   final bool _isEngineStarted = false;
-  final ItemCheckListStatus _itemCheckListStatus = ItemCheckListStatus.loading;
   final double _percentIndicatorValue = 0.2;
   final int _targetDistance = 5;
+  // final CheckListItem _checkListItem = ;
+  List<CheckListItem> listItemCheckList = [
+    CheckListItem(
+        logs: 'Log success',
+        status: ItemCheckListStatus.success,
+        title: ConstString.overHeat),
+    CheckListItem(
+        logs: 'Log success',
+        status: ItemCheckListStatus.fail,
+        title: ConstString.testRun),
+    CheckListItem(
+        logs: 'Log success',
+        status: ItemCheckListStatus.success,
+        title: ConstString.engineLight),
+    CheckListItem(
+        logs: 'Log success',
+        status: ItemCheckListStatus.loading,
+        title: ConstString.deletedCode),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -185,9 +204,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             itemExtent: 100,
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            itemCount: 3,
+                            itemCount: listItemCheckList.length,
                             itemBuilder: (context, index) {
-                              return _itemCheckList(_itemCheckListStatus);
+                              return _itemCheckList(listItemCheckList[index]);
                             }))
                   ],
                 )),
@@ -197,31 +216,29 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _itemCheckList(ItemCheckListStatus itemCheckListStatus) {
+  Widget _itemCheckList(CheckListItem item) {
     Color listTileColor;
     Icon listTileIcon;
-    String title;
-    if (itemCheckListStatus == ItemCheckListStatus.fail) {
+    String title = item.title;
+    if (item.status == ItemCheckListStatus.fail) {
       listTileColor = Color(0xfffb0049);
       listTileIcon = Icon(
         Icons.close,
         color: Colors.white,
       );
-      title = 'Fail';
-    } else if (itemCheckListStatus == ItemCheckListStatus.loading) {
+    } else if (item.status == ItemCheckListStatus.loading) {
       listTileColor = Color(0xff4700B1);
       listTileIcon = Icon(
         Icons.more_horiz,
         color: Colors.white,
       );
-      title = 'Loading';
+      title = ConstString.loading;
     } else {
       listTileColor = Color(0xff53a93f);
       listTileIcon = Icon(
         Icons.check,
         color: Colors.white,
       );
-      title = 'Successful';
     }
     return Column(
       children: [
