@@ -49,14 +49,12 @@ List<Uuid> deviceServices = [
 const String DEVICE_NAME = "ESP32-OBD2-BLE";
 
 enum BleOBDCheckList {
-  serviceEngineUuid,
   engineRpmCharacteristic,
   engineSpeedMeterCharacteristic,
   engineAirIntakeTempCharacteristic,
   engineLoadCharacteristic,
   engineCoolantTemperatureCharacteristic,
   engineOilTemperatureCharacteristic,
-  serviceVehicleUuid,
   vehicleSpeedCharacteristic,
   vehicleTimeRunWithMilOnCharacteristic,
   vehicleTimeSinceCodesClearedCharacteristic,
