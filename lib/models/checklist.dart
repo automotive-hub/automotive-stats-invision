@@ -1,5 +1,3 @@
-import '../screens/main_screen.dart';
-
 class CheckListItem {
   ItemCheckListStatus status;
   String title;
@@ -8,3 +6,5 @@ class CheckListItem {
   CheckListItem(
       {required this.logs, required this.status, required this.title});
 }
+
+enum ItemCheckListStatus { loading, success, fail }
