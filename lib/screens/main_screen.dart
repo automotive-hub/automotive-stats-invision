@@ -5,19 +5,18 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../models/checklist.dart';
 import '../utils/const_color.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainScreenState extends State<MainScreen> {
   final bool _isConnected = false;
   final bool _isEngineStarted = false;
   final double _percentIndicatorValue = 0.2;
   final int _targetDistance = 5;
-  // final CheckListItem _checkListItem = ;
   List<CheckListItem> listItemCheckList = [
     CheckListItem(
         logs: 'Log success',
