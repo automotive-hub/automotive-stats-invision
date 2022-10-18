@@ -1,5 +1,8 @@
+import 'package:automotive_stats_invision/utils/const_string.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+
+import '../utils/const_color.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -11,11 +14,15 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final bool _isConnected = false;
   final bool _isEngineStarted = false;
+  final ItemCheckListStatus _itemCheckListStatus = ItemCheckListStatus.loading;
+  final double _percentIndicatorValue = 0.2;
+  final int _targetDistance = 5;
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: const Color(0xff2c3036),
+      backgroundColor: ConstColor.background,
       body: Container(
         margin: EdgeInsets.symmetric(
             vertical: screenSize.height * 0.05,
@@ -28,8 +35,10 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  _isConnected ? "Connected" : "Disconnected",
-                  style: TextStyle(fontSize: 30, color: Colors.white),
+                  _isConnected
+                      ? ConstString.connected
+                      : ConstString.disconnected,
+                  style: TextStyle(fontSize: 30, color: ConstColor.whiteText),
                 ),
                 SizedBox(
                   width: 10,
@@ -37,33 +46,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 Icon(
                   Icons.circle,
                   size: 15,
-                  color: _isConnected ? Color(0xff34c759) : Colors.red,
+                  color: _isConnected ? ConstColor.success : ConstColor.fail,
                 )
               ],
             ),
             SizedBox(
               height: screenSize.height * 0.025,
             ),
-            // EngineStatusButton(
-            //   color: _isEngineStarted ? Color(0xff25CB55) : Colors.red,
-            // ),
-
             Container(
               margin: EdgeInsets.all(5),
               height: 56,
               width: 165,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color.fromRGBO(255, 255, 255, 0.3),
-                    Color.fromRGBO(0, 0, 0, 0),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
                 border: Border.all(
                     width: 1.5,
-                    color: Color(0xff989a9d),
+                    color: ConstColor.border,
                     style: BorderStyle.solid),
                 borderRadius: BorderRadius.all(Radius.circular(25.0)),
               ),
@@ -72,15 +69,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Icon(
                     Icons.power_settings_new,
-                    color: _isEngineStarted ? Color(0xff25CB55) : Colors.red,
+                    color:
+                        _isEngineStarted ? ConstColor.success : ConstColor.fail,
                   ),
                   SizedBox(
                     width: 5,
                   ),
                   Text(
-                    "Engine Started",
+                    ConstString.engineStart,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: ConstColor.whiteText,
                     ),
                   ),
                 ],
@@ -94,17 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: EdgeInsets.fromLTRB(
                     0, MediaQuery.of(context).size.height * 0.03, 0, 0),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color.fromRGBO(255, 255, 255, 0.1),
-                      Color.fromRGBO(0, 0, 0, 0),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
+                  gradient: ConstColor.greyGradient,
                   border: Border.all(
                       width: 1.5,
-                      color: Color(0xff989a9d),
+                      color: ConstColor.border,
                       style: BorderStyle.solid),
                   borderRadius: BorderRadius.all(Radius.circular(25.0)),
                 ),
@@ -121,55 +112,54 @@ class _MyHomePageState extends State<MyHomePage> {
                               CircularPercentIndicator(
                                 radius: 70.0,
                                 lineWidth: 20.0,
-                                percent: 0.2,
+                                percent: _percentIndicatorValue,
                                 center: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     Text(
-                                      "2km",
+                                      (_percentIndicatorValue * 100)
+                                          .toStringAsFixed(0),
                                       style: TextStyle(
                                           fontSize: 25,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.white),
+                                          color: ConstColor.whiteText),
                                     ),
                                     Text(
-                                      'Remaining',
+                                      ConstString.remaining,
                                       style: TextStyle(
-                                          fontSize: 9, color: Colors.white),
+                                          fontSize: 9,
+                                          color: ConstColor.whiteText),
                                     )
                                   ],
                                 ),
-                                // progressColor: Colors.green,
                                 rotateLinearGradient: true,
-                                linearGradient: LinearGradient(colors: const [
-                                  Color(0xff428b04),
-                                  Color(0xffc4770d),
-                                ]),
+                                linearGradient: ConstColor.colorFullGradient,
                                 startAngle: 180,
-                                backgroundColor: Colors.transparent,
+                                backgroundColor:
+                                    ConstColor.border.withOpacity(0.5),
                               ),
                               Spacer(),
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 20),
                                 decoration: BoxDecoration(
-                                  color: Color(0xffd8d8d9),
+                                  color: ConstColor.whiteText,
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20)),
                                 ),
                                 child: Column(
-                                  children: const [
+                                  children: [
                                     Text(
-                                      'Target Distance',
+                                      ConstString.targetDistance,
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
-                                      '5KM',
+                                      '$_targetDistance Km',
                                       style: TextStyle(
-                                          color: Colors.black38,
+                                          color: ConstColor.border,
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -190,6 +180,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                    Expanded(
+                        child: ListView.builder(
+                            itemExtent: 100,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 3,
+                            itemBuilder: (context, index) {
+                              return _itemCheckList(_itemCheckListStatus);
+                            }))
                   ],
                 )),
           ],
@@ -197,4 +196,51 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  Widget _itemCheckList(ItemCheckListStatus itemCheckListStatus) {
+    Color listTileColor;
+    Icon listTileIcon;
+    String title;
+    if (itemCheckListStatus == ItemCheckListStatus.fail) {
+      listTileColor = Color(0xfffb0049);
+      listTileIcon = Icon(
+        Icons.close,
+        color: Colors.white,
+      );
+      title = 'Fail';
+    } else if (itemCheckListStatus == ItemCheckListStatus.loading) {
+      listTileColor = Color(0xff4700B1);
+      listTileIcon = Icon(
+        Icons.more_horiz,
+        color: Colors.white,
+      );
+      title = 'Loading';
+    } else {
+      listTileColor = Color(0xff53a93f);
+      listTileIcon = Icon(
+        Icons.check,
+        color: Colors.white,
+      );
+      title = 'Successful';
+    }
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 25,
+          backgroundColor: listTileColor,
+          child: listTileIcon,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          title,
+          style: TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),
+        )
+      ],
+    );
+  }
 }
+
+enum ItemCheckListStatus { loading, success, fail }
