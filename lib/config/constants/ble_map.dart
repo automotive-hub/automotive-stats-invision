@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:location_permissions/location_permissions.dart';
+import 'package:rxdart/subjects.dart';
 
 import 'ble_desgin_constants.g.dart';
 
@@ -18,33 +19,41 @@ class OBDChecklist {
   OBDChecklist({required this.data, required this.type});
 }
 
-class BleStreams {
-  BleStreams({
-    required FlutterReactiveBle ble,
-  }) : _ble = ble;
-  final FlutterReactiveBle _ble;
-  StreamController<ConnectionStateUpdate> deviceConnectionState =
-      StreamController();
+class BleRepository {
+  BleRepository({
+    required this.ble,
+  });
+  final FlutterReactiveBle ble;
+  BehaviorSubject<DeviceConnectionState> deviceConnectionState =
+      BehaviorSubject();
   late StreamSubscription<ConnectionStateUpdate> deviceConnectionSub;
   late StreamSubscription<DiscoveredDevice> deviceScanSub;
-  void connectToOBD() async {
-    deviceScanSub = _ble.scanForDevices(
-        withServices: [], scanMode: ScanMode.lowLatency).listen((device) async {
+
+  Future<void> connectToOBD() async {
+    deviceScanSub = ble.scanForDevices(withServices: []).listen((device) async {
       if (device.name == DEVICE_NAME) {
+        print(device.name);
         await deviceScanSub.cancel();
         deviceConnectionSub =
-            _ble.connectToDevice(id: device.id).listen((event) {
-          deviceConnectionState.add(event);
+            ble.connectToDevice(id: device.id).listen((event) {
+          deviceConnectionState.add(event.connectionState);
+          print(event.connectionState);
+          if (event.connectionState == DeviceConnectionState.connected) {
+            List<Stream<OBDChecklist>> listOBDStream = getListStream(device.id);
+            listOBDStream.forEach((obdStream) {
+              obdStream.listen((event) {
+                ///
+                /// OBDChecklist Class
+                // CALL TO CHECKLIST SERVICE
+                print(event.type.toString() +
+                    "\t" +
+                    String.fromCharCodes(event.data));
+              });
+            });
+          }
         });
       }
-    }, onError: () {});
-  }
-
-  BleOBDCheckList getOBDEnmum(Uuid characteristicId) {
-    if (characteristicId == BLE_ENGINE_RPM_CHARACTERISTIC) {
-      return BleOBDCheckList.engineRpmCharacteristic;
-    }
-    return BleOBDCheckList.engineAirIntakeTempCharacteristic;
+    });
   }
 
   List<Stream<OBDChecklist>> getListStream(String deviceId) {
@@ -57,7 +66,7 @@ class BleStreams {
             deviceId: deviceId);
         final checkListType = getOBDEnmum(characteristicUuid);
         listBleStream
-            .add(_ble.subscribeToCharacteristic(characteristic).map((event) {
+            .add(ble.subscribeToCharacteristic(characteristic).map((event) {
           return OBDChecklist(data: event, type: checkListType);
         }));
       });
