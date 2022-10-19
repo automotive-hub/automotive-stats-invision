@@ -27,17 +27,23 @@ class _CheckedListState extends State<CheckedList> {
               stream: value.value.stream,
               builder: (context, snapshot) {
                 print(snapshot.data);
-                return _itemCheckList(snapshot.data ??
-                    Check(name: 'xxxx', status: CheckListStatus.processing));
+                return _itemCheckList(
+                    snapshot.data ?? Check(name: value.key.name));
               });
         }).toList());
   }
 }
 
+String getName(String name) {
+  if (name == CheckListName.overHeat.name) return ConstString.overHeat;
+  if (name == CheckListName.distance.name) return ConstString.targetDistance;
+  return ConstString.testRun;
+}
+
 Widget _itemCheckList(Check item) {
   Color listTileColor;
   Icon listTileIcon;
-  String title = item.name;
+  String title = getName(item.name);
   if (item.status == CheckListStatus.failed) {
     listTileColor = Color(0xfffb0049);
     listTileIcon = Icon(
@@ -50,7 +56,7 @@ Widget _itemCheckList(Check item) {
       Icons.more_horiz,
       color: Colors.white,
     );
-    title = ConstString.loading;
+    //title = ConstString.loading;
   } else {
     listTileColor = Color(0xff53a93f);
     listTileIcon = Icon(
