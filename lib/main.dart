@@ -1,4 +1,5 @@
 import 'package:automotive_stats_invision/core/ble_repository.dart';
+import 'package:automotive_stats_invision/core/check_list/check_list_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:provider/provider.dart';
@@ -16,13 +17,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (context) => BleRepository(ble: FlutterReactiveBle()),
-      lazy: false,
-      child: MaterialApp(
-        theme: ThemeData(
-          fontFamily: 'Poppins',
+      create: (BuildContext context) {
+        return CheckListCore()
+          ..createCheckListStore()
+          ..start();
+      },
+      child: Provider(
+        create: (context) => BleRepository(
+            ble: FlutterReactiveBle(),
+            checkListCore: context.read<CheckListCore>()),
+        lazy: false,
+        child: MaterialApp(
+          theme: ThemeData(
+            fontFamily: 'Poppins',
+          ),
+          home: const Home(),
         ),
-        home: const Home(),
       ),
     );
   }
