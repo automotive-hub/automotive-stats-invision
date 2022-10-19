@@ -1,5 +1,8 @@
+import 'package:automotive_stats_invision/config/constants/ble_desgin_constants.g.dart';
+import 'package:automotive_stats_invision/core/check_list/check_list_core.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/const_color.dart';
 import '../utils/const_string.dart';
@@ -55,7 +58,27 @@ class _CirclePercentRemainState extends State<CirclePercentRemain> {
                 startAngle: 180,
                 backgroundColor: ConstColor.border.withOpacity(0.5),
               ),
-              Spacer(),
+              Expanded(
+                child: Center(
+                  child: StreamBuilder<dynamic>(
+                      stream: context
+                          .read<CheckListCore>()
+                          .dataRawStream[
+                              BleOBDCheckList.engineRpmCharacteristic]!
+                          .dataStream,
+                      builder: (context, snapshot) {
+                        var rpm = 0;
+                        if (snapshot.hasData) {
+                          rpm = snapshot.data;
+                        }
+                        return Text(
+                          "$rpm RPM",
+                          style: TextStyle(
+                              fontSize: 25, color: ConstColor.whiteText),
+                        );
+                      }),
+                ),
+              ),
               Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
