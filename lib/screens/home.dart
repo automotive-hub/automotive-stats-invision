@@ -1,3 +1,4 @@
+import 'package:automotive_stats_invision/core/check_list/check_list_core.dart';
 import 'package:automotive_stats_invision/utils/const_string.dart';
 import 'package:automotive_stats_invision/widgets/checked_list.dart';
 import 'package:automotive_stats_invision/widgets/circle_percent_remain.dart';
@@ -113,7 +114,7 @@ class _HomeState extends State<Home> {
                     SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                     Expanded(
                         child: CheckedList(
-                      itemsCheckList: _itemsCheckList,
+                      checkLists: context.read<CheckListCore>().checkList,
                     ))
                   ],
                 )),
