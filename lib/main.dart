@@ -1,4 +1,4 @@
-import 'package:automotive_stats_invision/config/constants/ble_map.dart';
+import 'package:automotive_stats_invision/core/ble_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:provider/provider.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:provider/provider.dart';
 
-import '../config/constants/ble_map.dart';
+import '../core/ble_repository.dart';
 import '../models/checklist.dart';
 import '../utils/const_color.dart';
 import '../widgets/status_connect.dart';
