@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'screens/home.dart';
 
 Future<void> main() async {
-  await WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await FlutterReactiveBle().initialize();
   runApp(const MyApp());
 }

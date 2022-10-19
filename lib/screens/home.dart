@@ -67,27 +67,27 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            StatusConnect(
-              isConnected: _isConnected,
-            ),
+            StreamBuilder<DeviceConnectionState>(
+                stream: ble.deviceConnectionState.stream,
+                builder: (context, snapshot) {
+                  var isDeviceConnected = false;
+                  if (snapshot.data == DeviceConnectionState.connected) {
+                    isDeviceConnected = true;
+                  }
+                  return InkWell(
+                    onTap: () async {
+                      !isDeviceConnected ? await ble.connectToOBD() : null;
+                    },
+                    child: StatusConnect(
+                      isConnected: isDeviceConnected,
+                    ),
+                  );
+                }),
             SizedBox(
               height: screenSize.height * 0.025,
             ),
-            GestureDetector(
-              onTap: () async {
-                await ble.connectToOBD();
-              },
-              child: StreamBuilder<DeviceConnectionState>(
-                  stream: ble.deviceConnectionState.stream,
-                  builder: (context, snapshot) {
-                    var isDeviceConnected = false;
-                    if (snapshot.data == DeviceConnectionState.connected) {
-                      isDeviceConnected = true;
-                    }
-                    return StatusEngine(
-                      isEngineStarted: isDeviceConnected,
-                    );
-                  }),
+            StatusEngine(
+              isEngineStarted: _isEngineStarted,
             ),
             SizedBox(
               height: screenSize.height * 0.05,
