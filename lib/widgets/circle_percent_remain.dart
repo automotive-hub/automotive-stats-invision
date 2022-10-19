@@ -64,7 +64,7 @@ class _CirclePercentRemainState extends State<CirclePercentRemain> {
                       stream: context
                           .read<CheckListCore>()
                           .dataRawStream[
-                              BleOBDCheckList.engineRpmCharacteristic]!
+                              BleOBDCheckList.engineLoadCharacteristic]!
                           .dataStream,
                       builder: (context, snapshot) {
                         var rpm = 0;

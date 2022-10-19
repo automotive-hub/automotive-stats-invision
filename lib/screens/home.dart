@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:provider/provider.dart';
 
+import '../config/constants/ble_desgin_constants.g.dart';
 import '../core/ble_repository.dart';
 import '../models/checklist.dart';
 import '../utils/const_color.dart';
@@ -87,9 +88,20 @@ class _HomeState extends State<Home> {
             SizedBox(
               height: screenSize.height * 0.025,
             ),
-            StatusEngine(
-              isEngineStarted: _isEngineStarted,
-            ),
+            StreamBuilder<dynamic>(
+                stream: context
+                    .read<CheckListCore>()
+                    .dataRawStream[BleOBDCheckList.engineRpmCharacteristic]!
+                    .dataStream,
+                builder: (context, snapshot) {
+                  var isEngineStarted = false;
+                  if (snapshot.hasData) {
+                    isEngineStarted = true;
+                  }
+                  return StatusEngine(
+                    isEngineStarted: isEngineStarted,
+                  );
+                }),
             SizedBox(
               height: screenSize.height * 0.05,
             ),
