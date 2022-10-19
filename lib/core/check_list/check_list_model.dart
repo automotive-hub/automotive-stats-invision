@@ -3,7 +3,7 @@ import 'dart:async';
 class DataRaw {
   String characteristicName;
   List<dynamic> store = [];
-  late StreamController dataController = StreamController<dynamic>();
+  late StreamController dataController = StreamController<dynamic>.broadcast();
   Stream get dataStream => dataController.stream;
   DataRaw({
     required this.characteristicName,

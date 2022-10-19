@@ -1,5 +1,6 @@
 import 'package:automotive_stats_invision/config/constants/ble_desgin_constants.g.dart';
 import 'package:automotive_stats_invision/core/check_list/check_list_core.dart';
+import 'package:automotive_stats_invision/core/check_list/check_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -32,31 +33,40 @@ class _CirclePercentRemainState extends State<CirclePercentRemain> {
         children: [
           Column(
             children: [
-              CircularPercentIndicator(
-                radius: 70.0,
-                lineWidth: 20.0,
-                percent: widget.percentIndicatorValue,
-                center: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      (widget.percentIndicatorValue * 100).toStringAsFixed(0),
-                      style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          color: ConstColor.whiteText),
+              StreamBuilder<Check>(
+                stream: context.read<CheckListCore>().checkList[CheckListName.distance.name]!.stream,
+                builder: (context, snapshot) {
+                  Check distanceCheck = snapshot.data ?? Check(name: CheckListName.distance.name, value: 0);
+                  int distanceBase = 5;
+                  double percent = distanceCheck.value / distanceBase;
+
+                  return CircularPercentIndicator(
+                    radius: 70.0,
+                    lineWidth: 20.0,
+                    percent: percent,
+                    center: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          (distanceBase - distanceCheck.value).toString(),
+                          style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              color: ConstColor.whiteText),
+                        ),
+                        Text(
+                          ConstString.remaining,
+                          style:
+                              TextStyle(fontSize: 9, color: ConstColor.whiteText),
+                        )
+                      ],
                     ),
-                    Text(
-                      ConstString.remaining,
-                      style:
-                          TextStyle(fontSize: 9, color: ConstColor.whiteText),
-                    )
-                  ],
-                ),
-                rotateLinearGradient: true,
-                linearGradient: ConstColor.colorFullGradient,
-                startAngle: 180,
-                backgroundColor: ConstColor.border.withOpacity(0.5),
+                    rotateLinearGradient: true,
+                    linearGradient: ConstColor.colorFullGradient,
+                    startAngle: 180,
+                    backgroundColor: ConstColor.border.withOpacity(0.5),
+                  );
+                }
               ),
               Expanded(
                 child: Center(
@@ -79,30 +89,46 @@ class _CirclePercentRemainState extends State<CirclePercentRemain> {
                       }),
                 ),
               ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                decoration: BoxDecoration(
-                  color: ConstColor.whiteText,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      ConstString.targetDistance,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+              InkWell(
+                onTap: () {
+                  CheckListCore checkListCore = context.read<CheckListCore>();
+                  int lastData = checkListCore
+                          .dataRawStream[BleOBDCheckList
+                              .vehicleDistanceTraveledSinceCodesClearedCharacteristic]!
+                          .store
+                          .last ??
+                      0;
+                  lastData = lastData + 1;
+                  checkListCore.addCheckListData(
+                      BleOBDCheckList
+                          .vehicleDistanceTraveledSinceCodesClearedCharacteristic,
+                      lastData);
+                },
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: ConstColor.whiteText,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        ConstString.targetDistance,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '${widget.targetDistance} Km',
-                      style: TextStyle(
-                          color: ConstColor.border,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
+                      Text(
+                        '${widget.targetDistance} Km',
+                        style: TextStyle(
+                            color: ConstColor.border,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
               )
             ],

@@ -26,7 +26,7 @@ class _CheckedListState extends State<CheckedList> {
           return StreamBuilder(
               stream: value.value.stream,
               builder: (context, snapshot) {
-                print(snapshot.data);
+                //print(snapshot.data);
                 return _itemCheckList(
                     snapshot.data ?? Check(name: value.key.name));
               });

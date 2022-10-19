@@ -40,13 +40,13 @@ class CheckListCore {
   }
 
   void processingData() {
-    checkDistance();
-    checkTempOverHeat();
+    listenDistance();
+    listenTempOverHeat();
   }
 
   // ---- check list implementation ----
 
-  void checkDistance() {
+  void listenDistance() {
     DataRaw dataRaw = dataRawStream[BleOBDCheckList
         .vehicleDistanceTraveledSinceCodesClearedCharacteristic]!;
 
@@ -58,15 +58,20 @@ class CheckListCore {
           checkList[CheckListName.distance]!.sink.add(Check(
               name: CheckListName.distance.name,
               status: CheckListStatus.success,
-              value: distanceNew));
+              value: distanceTraveled));
+
+          analyze5km();
+        } else {
+          checkList[CheckListName.distance]!.sink.add(Check(
+              name: CheckListName.distance.name,
+              status: CheckListStatus.processing,
+              value: distanceTraveled));
         }
       }
     });
   }
 
-  void analyze5km() {}
-
-  void checkTempOverHeat() async {
+  void listenTempOverHeat() async {
     dataRawStream[BleOBDCheckList.engineCoolantTemperatureCharacteristic]!
         .dataController
         .stream
@@ -82,7 +87,32 @@ class CheckListCore {
     });
   }
 
-  void checkLightEngine() {
-    // TODO: implement checkLightEngine
+  // --- static function ---
+  void analyze5km() {
+    bool isOverHeat = checkTempOverHeat();
+    if (isOverHeat) {
+      checkList[CheckListName.overHeat]!.sink.add(Check(
+          name: CheckListName.overHeat.name,
+          status: CheckListStatus.failed,
+          value: dataRawStream[
+                  BleOBDCheckList.engineCoolantTemperatureCharacteristic]!
+              .store
+              .last));
+    } else {
+      checkList[CheckListName.overHeat]!.sink.add(Check(
+          name: CheckListName.overHeat.name,
+          status: CheckListStatus.success,
+          value: dataRawStream[
+                  BleOBDCheckList.engineCoolantTemperatureCharacteristic]!
+              .store
+              .last));
+    }
+  }
+
+  bool checkTempOverHeat() {
+    return dataRawStream[
+            BleOBDCheckList.engineCoolantTemperatureCharacteristic]!
+        .store
+        .any((temp) => temp > normalTemp);
   }
 }
