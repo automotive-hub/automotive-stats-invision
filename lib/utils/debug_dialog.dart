@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:automotive_stats_invision/config/constants/ble_map.dart';
+import 'package:automotive_stats_invision/core/ble_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
