@@ -51,11 +51,7 @@ class CheckListCore {
         .vehicleDistanceTraveledSinceCodesClearedCharacteristic]!;
 
     dataRaw.dataController.stream.listen((distanceNew) {
-      checkList[BleOBDCheckList
-              .vehicleDistanceTraveledSinceCodesClearedCharacteristic]!
-          .sink
-          .add(distanceNew);
-      if (dataRaw.store.length > 2) {
+      if (dataRaw.store.length >= 2) {
         var distanceInit = dataRaw.store.first;
         var distanceTraveled = distanceNew - distanceInit;
         if (distanceTraveled >= distanceTarget) {
