@@ -3,6 +3,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../utils/const_color.dart';
 import '../utils/const_string.dart';
+import '../utils/debug_dialog.dart';
 
 class CirclePercentRemain extends StatefulWidget {
   final double percentIndicatorValue;
@@ -83,12 +84,15 @@ class _CirclePercentRemainState extends State<CirclePercentRemain> {
               )
             ],
           ),
-          Container(
-            margin: const EdgeInsets.only(left: 15),
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: Image.asset(
-              'assets/images/car.png',
-              fit: BoxFit.cover,
+          GestureDetector(
+            onDoubleTap: () async => {await openDebugDialog(context)},
+            child: Container(
+              margin: const EdgeInsets.only(left: 15),
+              height: MediaQuery.of(context).size.height * 0.4,
+              child: Image.asset(
+                'assets/images/car.png',
+                fit: BoxFit.cover,
+              ),
             ),
           )
         ],

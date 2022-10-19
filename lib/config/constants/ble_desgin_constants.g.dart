@@ -75,3 +75,53 @@ List<Uuid> deviceCharacteristic = [
   BLE_VEHICLE_DISTANCE_TRAVELED_WITH_MIL_ON_CHARACTERISTIC,
   BLE_VEHICLE_DISTANCE_TRAVELED_SINCE_CODES_CLEARED_CHARACTERISTIC,
 ];
+BleOBDCheckList getOBDEnmum(Uuid characteristicId) {
+  if (characteristicId == BLE_ENGINE_RPM_CHARACTERISTIC) {
+    return BleOBDCheckList.engineRpmCharacteristic;
+  }
+
+  if (characteristicId == BLE_ENGINE_SPEED_METER_CHARACTERISTIC) {
+    return BleOBDCheckList.engineSpeedMeterCharacteristic;
+  }
+
+  if (characteristicId == BLE_ENGINE_AIR_INTAKE_TEMP_CHARACTERISTIC) {
+    return BleOBDCheckList.engineAirIntakeTempCharacteristic;
+  }
+
+  if (characteristicId == BLE_ENGINE_LOAD_CHARACTERISTIC) {
+    return BleOBDCheckList.engineLoadCharacteristic;
+  }
+
+  if (characteristicId == BLE_ENGINE_COOLANT_TEMPERATURE_CHARACTERISTIC) {
+    return BleOBDCheckList.engineCoolantTemperatureCharacteristic;
+  }
+
+  if (characteristicId == BLE_ENGINE_OIL_TEMPERATURE_CHARACTERISTIC) {
+    return BleOBDCheckList.engineOilTemperatureCharacteristic;
+  }
+
+  if (characteristicId == BLE_VEHICLE_SPEED_CHARACTERISTIC) {
+    return BleOBDCheckList.vehicleSpeedCharacteristic;
+  }
+
+  if (characteristicId == BLE_VEHICLE_TIME_RUN_WITH_MIL_ON_CHARACTERISTIC) {
+    return BleOBDCheckList.vehicleTimeRunWithMilOnCharacteristic;
+  }
+
+  if (characteristicId == BLE_VEHICLE_TIME_SINCE_CODES_CLEARED_CHARACTERISTIC) {
+    return BleOBDCheckList.vehicleTimeSinceCodesClearedCharacteristic;
+  }
+
+  if (characteristicId ==
+      BLE_VEHICLE_DISTANCE_TRAVELED_WITH_MIL_ON_CHARACTERISTIC) {
+    return BleOBDCheckList.vehicleDistanceTraveledWithMilOnCharacteristic;
+  }
+
+  if (characteristicId ==
+      BLE_VEHICLE_DISTANCE_TRAVELED_SINCE_CODES_CLEARED_CHARACTERISTIC) {
+    return BleOBDCheckList
+        .vehicleDistanceTraveledSinceCodesClearedCharacteristic;
+  }
+
+  return BleOBDCheckList.engineAirIntakeTempCharacteristic;
+}

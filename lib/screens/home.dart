@@ -2,7 +2,10 @@ import 'package:automotive_stats_invision/utils/const_string.dart';
 import 'package:automotive_stats_invision/widgets/checked_list.dart';
 import 'package:automotive_stats_invision/widgets/circle_percent_remain.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:provider/provider.dart';
 
+import '../config/constants/ble_map.dart';
 import '../models/checklist.dart';
 import '../utils/const_color.dart';
 import '../widgets/status_connect.dart';
@@ -40,7 +43,19 @@ class _HomeState extends State<Home> {
   ];
 
   @override
+  initState() {
+    super.initState();
+    // bleStreams.deviceConnectionState.stream.listen((event) {
+    //   print(event);
+    //   if (event.connectionState == DeviceConnectionState.connected) {
+    //     bleStreams.getListStream(event.deviceId);
+    //   }
+    // });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final ble = context.read<BleRepository>();
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: ConstColor.background,
@@ -58,8 +73,21 @@ class _HomeState extends State<Home> {
             SizedBox(
               height: screenSize.height * 0.025,
             ),
-            StatusEngine(
-              isEngineStarted: _isEngineStarted,
+            GestureDetector(
+              onTap: () async {
+                await ble.connectToOBD();
+              },
+              child: StreamBuilder<DeviceConnectionState>(
+                  stream: ble.deviceConnectionState.stream,
+                  builder: (context, snapshot) {
+                    var isDeviceConnected = false;
+                    if (snapshot.data == DeviceConnectionState.connected) {
+                      isDeviceConnected = true;
+                    }
+                    return StatusEngine(
+                      isEngineStarted: isDeviceConnected,
+                    );
+                  }),
             ),
             SizedBox(
               height: screenSize.height * 0.05,
