@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io' show Platform;
 
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:location_permissions/location_permissions.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../config/constants/ble_desgin_constants.g.dart';
@@ -32,32 +30,18 @@ class BleRepository {
   final List<StreamSubscription> _listObdCharacteristicStream = [];
 
   Future<void> connectToOBD() async {
-    _deviceScanSub =
-        ble.scanForDevices(withServices: []).listen((device) async {
-      if (device.name == DEVICE_NAME) {
-        print(device.name);
-        await _deviceScanSub.cancel();
-        _deviceConnectionSub =
-            ble.connectToDevice(id: device.id).listen((event) {
-          deviceConnectionState.add(event.connectionState);
-          print(event.connectionState);
-          if (event.connectionState == DeviceConnectionState.connected) {
-            _listObdCharacteristicStream.clear();
-            List<Stream<OBDChecklist>> listOBDStream = getListStream(device.id);
-            listOBDStream.forEach((obdStream) {
-              _listObdCharacteristicStream.add(obdStream.listen((event) {
-                obd2ReaderState.add(event);
-
-                ///
-                /// OBDChecklist Class
-                // CALL TO CHECKLIST SERVICE
-                print(event.type.toString() +
-                    "\t" +
-                    String.fromCharCodes(event.data));
-              }));
-            });
-          }
-        });
+    DiscoveredDevice device = await ble.scanForDevices(
+        withServices: []).firstWhere((element) => element.name == DEVICE_NAME);
+    ble.connectToDevice(id: device.id).listen((event) {
+      deviceConnectionState.add(event.connectionState);
+      if (event.connectionState == DeviceConnectionState.connected) {
+        _listObdCharacteristicStream.clear();
+        List<Stream<OBDChecklist>> listOBDStream = getListStream(device.id);
+        for (var obdStream in listOBDStream) {
+          _listObdCharacteristicStream.add(obdStream.listen((event) {
+            obd2ReaderState.add(event);
+          }));
+        }
       }
     });
   }
