@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:automotive_stats_invision/core/check_list/check_list_core.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -18,9 +19,8 @@ class OBDChecklist {
 }
 
 class BleRepository {
-  BleRepository({
-    required this.ble,
-  });
+  BleRepository({required this.ble, required this.checkListCore});
+  final CheckListCore checkListCore;
   final FlutterReactiveBle ble;
   BehaviorSubject<DeviceConnectionState> deviceConnectionState =
       BehaviorSubject();
@@ -40,6 +40,9 @@ class BleRepository {
         for (var obdStream in listOBDStream) {
           _listObdCharacteristicStream.add(obdStream.listen((event) {
             obd2ReaderState.add(event);
+            final dataAsString = String.fromCharCodes(event.data);
+            final obdData = int.parse((dataAsString));
+            checkListCore.addCheckListData(event.type, obdData);
           }));
         }
       }
