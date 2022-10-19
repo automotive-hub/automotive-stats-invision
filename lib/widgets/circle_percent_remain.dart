@@ -34,40 +34,49 @@ class _CirclePercentRemainState extends State<CirclePercentRemain> {
           Column(
             children: [
               StreamBuilder<Check>(
-                stream: context.read<CheckListCore>().checkList[CheckListName.distance.name]!.stream,
-                builder: (context, snapshot) {
-                  Check distanceCheck = snapshot.data ?? Check(name: CheckListName.distance.name, value: 0);
-                  int distanceBase = 5;
-                  double percent = distanceCheck.value / distanceBase;
-
-                  return CircularPercentIndicator(
-                    radius: 70.0,
-                    lineWidth: 20.0,
-                    percent: percent,
-                    center: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          (distanceBase - distanceCheck.value).toString(),
-                          style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              color: ConstColor.whiteText),
-                        ),
-                        Text(
-                          ConstString.remaining,
-                          style:
-                              TextStyle(fontSize: 9, color: ConstColor.whiteText),
-                        )
-                      ],
-                    ),
-                    rotateLinearGradient: true,
-                    linearGradient: ConstColor.colorFullGradient,
-                    startAngle: 180,
-                    backgroundColor: ConstColor.border.withOpacity(0.5),
-                  );
-                }
-              ),
+                  stream: context
+                      .read<CheckListCore>()
+                      .checkList[CheckListName.distance]!
+                      .stream,
+                  builder: (context, snapshot) {
+                    Check distanceCheck = snapshot.data ??
+                        Check(name: CheckListName.distance.name, value: 0);
+                    int distanceBase = 5;
+                    String remainDistance =
+                        (distanceBase - distanceCheck.value) > 0
+                            ? (distanceBase - distanceCheck.value).toString()
+                            : "5";
+                    double percent = distanceCheck.value / distanceBase;
+                    if (distanceBase <= distanceCheck.value) {
+                      percent = 1;
+                    }
+                    return CircularPercentIndicator(
+                      radius: 70.0,
+                      lineWidth: 20.0,
+                      percent: percent,
+                      center: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            remainDistance,
+                            style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: ConstColor.whiteText),
+                          ),
+                          Text(
+                            ConstString.remaining,
+                            style: TextStyle(
+                                fontSize: 9, color: ConstColor.whiteText),
+                          )
+                        ],
+                      ),
+                      rotateLinearGradient: true,
+                      linearGradient: ConstColor.colorFullGradient,
+                      startAngle: 180,
+                      backgroundColor: ConstColor.border.withOpacity(0.5),
+                    );
+                  }),
               Expanded(
                 child: Center(
                   child: StreamBuilder<dynamic>(
@@ -92,12 +101,11 @@ class _CirclePercentRemainState extends State<CirclePercentRemain> {
               InkWell(
                 onTap: () {
                   CheckListCore checkListCore = context.read<CheckListCore>();
-                  int lastData = checkListCore
-                          .dataRawStream[BleOBDCheckList
-                              .vehicleDistanceTraveledSinceCodesClearedCharacteristic]!
-                          .store
-                          .last ??
-                      0;
+                  var store = checkListCore
+                      .dataRawStream[BleOBDCheckList
+                          .vehicleDistanceTraveledSinceCodesClearedCharacteristic]!
+                      .store;
+                  int lastData = store.isNotEmpty ? store.last : 0;
                   lastData = lastData + 1;
                   checkListCore.addCheckListData(
                       BleOBDCheckList
