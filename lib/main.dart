@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
+      lazy: false,
       create: (BuildContext context) {
         return CheckListCore()
           ..createCheckListStore()

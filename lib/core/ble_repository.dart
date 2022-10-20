@@ -41,7 +41,7 @@ class BleRepository {
           _listObdCharacteristicStream.add(obdStream.listen((event) {
             obd2ReaderState.add(event);
             final dataAsString = String.fromCharCodes(event.data);
-            final obdData = int.parse((dataAsString));
+            final obdData = double.parse((dataAsString)).toInt();
             checkListCore.addCheckListData(event.type, obdData);
           }));
         }
