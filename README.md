@@ -1,6 +1,9 @@
 # automotive_stats_invision
 
 automotive stats OBD information
+October hackathon!
+
+![image](https://user-images.githubusercontent.com/42218324/200856733-cb9b2107-661d-4390-859f-f07eed53e477.png)
 
 ## Getting Started
 
